@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Header /> component tests should render Header component correctly 1`] = `
+<DocumentFragment>
+  <div>
+    <h1
+      data-testid="h1tag"
+    >
+      My Header
+    </h1>
+  </div>
+</DocumentFragment>
+`;

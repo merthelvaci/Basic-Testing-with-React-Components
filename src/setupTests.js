@@ -8,6 +8,7 @@ import {
 	render,
 	cleanup,
 	fireEvent,
+	wait,
 	waitForElement,
 	waitForElementToBeRemoved,
 } from '@testing-library/react';
@@ -20,6 +21,7 @@ global.React = React;
 global.render = render;
 global.cleanup = cleanup;
 global.fireEvent = fireEvent;
+global.wait = wait;
 global.waitForElement = waitForElement;
 global.waitForElementToBeRemoved = waitForElementToBeRemoved;
 global.timeoutInMS = 15000;

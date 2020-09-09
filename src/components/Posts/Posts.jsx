@@ -57,13 +57,16 @@ const Posts = () => {
 			});
 			const fetch = async () => {
 				// define a function being responsible for making request to API to fetch required data
-				const response = await axios.get(url);
+				/* const response = await axios.get(url); */
+				const response = await fetch(url, { method: 'GET' });
+				const data = await response.json();
 				return postsDispatch({
 					// perform proper state update
 					type: 'FETCH_POSTS_SUCCESS',
 					error: null,
 					loading: false,
-					posts: response.data,
+					//posts: response.data,
+					posts: data,
 				});
 			};
 		} catch (e) {
@@ -78,7 +81,54 @@ const Posts = () => {
 		fetch(); // call the async function
 	}, []);
 
-	let content = <Spinner />; // assign a default content to be a Spinner
+	return (
+		<div>
+			{loading && <Spinner />}
+			{error && !loading && (
+				<div data-testid="error_wrapper" className="error-wrapper">
+					<p data-testid="error_text" className="error-text">
+						An error occurred
+					</p>
+				</div>
+			)}
+			{!posts && !error && (
+				<div
+					data-testid="normal_content_wrapper"
+					className="normal-content-wrapper"
+				>
+					<p
+						data-testid="normal_content_text"
+						className="normal-content-text"
+					>
+						No data fetching occurs yet
+					</p>
+					<button
+						aria-label="fetch_data"
+						data-testid="fetch_btn"
+						onClick={() =>
+							fetchPostsHandler(
+								'https://jsonplaceholder.typicode.com/posts'
+							)
+						}
+					>
+						FETCH POSTS
+					</button>
+				</div>
+			)}
+			{posts &&
+				posts.map((post) => (
+					<Post
+						key={post.body}
+						body={post.body}
+						id={post.id}
+						title={post.title}
+						userId={post.userId}
+					/>
+				))}
+		</div>
+	);
+
+	/* let content = <Spinner />; // assign a default content to be a Spinner
 
 	if (error && !loading) {
 		// if there will be an error during data fetching after loading is done
@@ -129,7 +179,7 @@ const Posts = () => {
 		));
 	}
 
-	return content;
+	return content; */
 };
 
 export default Posts;

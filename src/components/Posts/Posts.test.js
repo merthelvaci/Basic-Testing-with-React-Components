@@ -1,15 +1,16 @@
 import Posts, { postsReducer } from '.';
 import axiosMock from 'axios';
-import { mount } from 'enzyme';
 
 let asFrag;
 let byTestId;
 let byText;
+let _container;
 beforeEach(() => {
-	const { asFragment, getByTestId, getByText } = render(<Posts />);
+	const { asFragment, container, getByTestId, getByText } = render(<Posts />);
 	asFrag = asFragment;
 	byTestId = getByTestId;
 	byText = getByText;
+	_container = container;
 });
 
 afterEach(cleanup);
@@ -65,9 +66,22 @@ describe('<Posts /> component tests', () => {
 		});
 	});
 
-	it('should fetch posts data upon clicking "FETCH POSTS" button', async () => {
-		// Starting from Line-71 through Line-87, Enzyme is used. In order to test using React Testing Library (RTL) implementation,
-		// please comment out those lines and uncomment lines starting from Line-90
+	it('should render no post(s) at startup', () => {
+		const noPostsText = byTestId('normal_content_text');
+
+		expect(noPostsText).toHaveTextContent('No data fetching occurs yet');
+	});
+
+	it('should have a loading spinner displayed while data fetching in progress', () => {
+		const fetchBtn = byTestId('fetch_btn');
+		fireEvent.click(fetchBtn);
+
+		expect(_container.querySelector('.lds-roller')).toBeInTheDocument();
+	});
+
+	/* it('should fetch posts data upon clicking "FETCH POSTS" button', async () => {
+		// Starting from Line-85 through Line-101, Enzyme is used. In order to test using React Testing Library (RTL) implementation,
+		// please comment out those lines and uncomment lines starting from Line-103
 		const component = mount(<Posts />);
 		const fetchPostsData = axiosMock.get.mockResolvedValueOnce({
 			data: {
@@ -87,7 +101,7 @@ describe('<Posts /> component tests', () => {
 		expect(fetchPostsData).toHaveBeenCalledTimes(1); // check that mock function was triggered upon simulating a click action
 
 		// Following code snippet is COMPLETELY WRONG! I dont know how to test async function triggered upon click event using RTL!
-		/* const fetchButtonEl = byTestId('fetch_btn');
+		const fetchButtonEl = byTestId('fetch_btn');
         fireEvent.click(fetchButtonEl);
 		await axiosMock.get.mockResolvedValueOnce({
 			data: {
@@ -100,6 +114,23 @@ describe('<Posts /> component tests', () => {
 
 		await waitForElement(() =>
 			expect(axiosMock.get).toHaveBeenCalledTimes(1)
-		); */
+		);
+	}); */
+
+	it('should render a fake post data upon successful data fetching', async () => {
+		axiosMock.get.mockResolvedValueOnce({
+			data: {
+				body: 'Post Body 1', // in order to get more detail about fetch request, please refer to Line-111 in Posts.jsx
+				id: 'Post Id 1',
+				title: 'Post Title 1',
+				userId: 'Post User Id 1',
+			},
+		});
+
+		const fetchButtonEl = byTestId('fetch_btn');
+		fireEvent.click(fetchButtonEl);
+		await wait(() => byTestId('post_wrapper'));
+
+		expect(byTestId('post_title')).toHaveTextContent('Title: Post Title 1');
 	});
 });
