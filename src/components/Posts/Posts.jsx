@@ -82,39 +82,44 @@ const Posts = () => {
 
 	return (
 		<>
-			{loading && <Spinner />}
-			{error && !loading && (
-				<div aria-label="error_wrapper" className="error-wrapper">
-					<p aria-label="error_text" className="error-text">
-						An error occurred
-					</p>
-				</div>
-			)}
-			{!posts && !error && (
-				<div
-					aria-label="normal_content_wrapper"
-					className="normal-content-wrapper"
-				>
-					<p
-						aria-label="normal_content_text"
-						className="normal-content-text"
+			{loading && <Spinner />}{' '}
+			{/* while loading status is true, show a spinner */}
+			{error &&
+				!loading /* if data fetching fails, show a dummy error text */ && (
+					<div aria-label="error_wrapper" className="error-wrapper">
+						<p aria-label="error_text" className="error-text">
+							An error occurred
+						</p>
+					</div>
+				)}
+			{!posts &&
+				!error /* unless fetch operation is performed, show the following dummy content */ && (
+					<div
+						aria-label="normal_content_wrapper"
+						className="normal-content-wrapper"
 					>
-						No data fetching occurs yet
-					</p>
-					<button
-						aria-label="fetch_data"
-						onClick={() =>
-							fetchPostsHandler(
-								'https://jsonplaceholder.typicode.com/posts'
-							)
-						}
-					>
-						FETCH POSTS
-					</button>
-				</div>
-			)}
+						<p
+							aria-label="normal_content_text"
+							className="normal-content-text"
+						>
+							No data fetching occurs yet
+						</p>
+						<button
+							aria-label="fetch_data"
+							onClick={() =>
+								fetchPostsHandler(
+									'https://jsonplaceholder.typicode.com/posts'
+								)
+							}
+						>
+							FETCH POSTS
+						</button>
+					</div>
+				)}
 			{posts &&
-				posts.map((post) => (
+				posts.map((
+					post /* upon successful fetch of posts data, render each post */
+				) => (
 					<Post
 						key={post.body}
 						body={post.body}
