@@ -2,6 +2,7 @@
 
 exports[`<Posts /> component tests should render <Posts /> component correctly 1`] = `
 <DocumentFragment>
+   
   <div
     aria-label="normal_content_wrapper"
     class="normal-content-wrapper"
