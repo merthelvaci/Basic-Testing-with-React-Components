@@ -2,11 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Post = ({ body, title }) => {
-	<div data-testid="post_wrapper" className="post-wrapper">
-		<span data-testid="post_title" className="post-title">
+	<div aria-label="post_wrapper" className="post-wrapper">
+		<span aria-label="post_title" className="post-title">
 			Title: {title}
 		</span>
-		<span data-testid="post_body" className="post-body">
+		<span aria-label="post_body" className="post-body">
 			Body: {body}
 		</span>
 	</div>;

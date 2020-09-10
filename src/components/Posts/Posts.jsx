@@ -57,9 +57,8 @@ const Posts = () => {
 			});
 			const fetch = async () => {
 				// define a function being responsible for making request to API to fetch required data
-				/* const response = await axios.get(url); */
-				const response = await fetch(url, { method: 'GET' });
-				const data = await response.json();
+				const response = await axios.get(url);
+				const data = response.data;
 				return postsDispatch({
 					// perform proper state update
 					type: 'FETCH_POSTS_SUCCESS',
@@ -82,29 +81,28 @@ const Posts = () => {
 	}, []);
 
 	return (
-		<div>
+		<>
 			{loading && <Spinner />}
 			{error && !loading && (
-				<div data-testid="error_wrapper" className="error-wrapper">
-					<p data-testid="error_text" className="error-text">
+				<div aria-label="error_wrapper" className="error-wrapper">
+					<p aria-label="error_text" className="error-text">
 						An error occurred
 					</p>
 				</div>
 			)}
 			{!posts && !error && (
 				<div
-					data-testid="normal_content_wrapper"
+					aria-label="normal_content_wrapper"
 					className="normal-content-wrapper"
 				>
 					<p
-						data-testid="normal_content_text"
+						aria-label="normal_content_text"
 						className="normal-content-text"
 					>
 						No data fetching occurs yet
 					</p>
 					<button
 						aria-label="fetch_data"
-						data-testid="fetch_btn"
 						onClick={() =>
 							fetchPostsHandler(
 								'https://jsonplaceholder.typicode.com/posts'
@@ -125,61 +123,8 @@ const Posts = () => {
 						userId={post.userId}
 					/>
 				))}
-		</div>
+		</>
 	);
-
-	/* let content = <Spinner />; // assign a default content to be a Spinner
-
-	if (error && !loading) {
-		// if there will be an error during data fetching after loading is done
-		content = (
-			<div data-testid="error_wrapper" className="error-wrapper">
-				<p data-testid="error_text" className="error-text">
-					An error occurred
-				</p>
-			</div>
-		);
-	}
-
-	if (!posts && !error) {
-		// content to be rendered upon component mounting and unless clicking event onto "FETCH POSTS" button occurs and so no errors arise
-		const url = 'https://jsonplaceholder.typicode.com/posts';
-		content = (
-			<div
-				data-testid="normal_content_wrapper"
-				className="normal-content-wrapper"
-			>
-				<p
-					data-testid="normal_content_text"
-					className="normal-content-text"
-				>
-					No data fetching occurs yet
-				</p>
-				<button
-					aria-label="fetch_data"
-					data-testid="fetch_btn"
-					onClick={() => fetchPostsHandler(url)}
-				>
-					FETCH POSTS
-				</button>
-			</div>
-		);
-	}
-
-	if (posts) {
-		// upon successful data fetching occurs, update "content"
-		content = posts.map((post) => (
-			<Post
-				key={post.body}
-				body={post.body}
-				id={post.id}
-				title={post.title}
-				userId={post.userId}
-			/>
-		));
-	}
-
-	return content; */
 };
 
 export default Posts;

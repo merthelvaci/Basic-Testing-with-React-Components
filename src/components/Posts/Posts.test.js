@@ -1,18 +1,20 @@
 import Posts, { postsReducer } from '.';
+import { mount } from 'enzyme';
 import axiosMock from 'axios';
 
 let asFrag;
-let byTestId;
-let byText;
+let byLabelText;
 let _container;
 beforeEach(() => {
-	const { asFragment, container, getByTestId, getByText } = render(<Posts />);
+	const { asFragment, container, getByLabelText } = render(<Posts />);
+
+	// following 3 variables are used as placeholders in each test
 	asFrag = asFragment;
-	byTestId = getByTestId;
-	byText = getByText;
+	byLabelText = getByLabelText;
 	_container = container;
 });
 
+// perform cleanup operation after each test
 afterEach(cleanup);
 
 describe('<Posts /> component tests', () => {
@@ -20,7 +22,7 @@ describe('<Posts /> component tests', () => {
 		expect(asFrag()).toMatchSnapshot();
 	});
 
-	describe('postsReducer function tests', () => {
+	describe('postsReducer function tests ~~ check that postReducer function works as desired under different conditions', () => {
 		let initialState = {
 			error: null,
 			loading: false,
@@ -67,26 +69,25 @@ describe('<Posts /> component tests', () => {
 	});
 
 	it('should render no post(s) at startup', () => {
-		const noPostsText = byTestId('normal_content_text');
-
+		const noPostsText = byLabelText('normal_content_text');
 		expect(noPostsText).toHaveTextContent('No data fetching occurs yet');
 	});
 
 	it('should have a loading spinner displayed while data fetching in progress', () => {
-		const fetchBtn = byTestId('fetch_btn');
+		const fetchBtn = byLabelText('fetch_data');
 		fireEvent.click(fetchBtn);
 
-		expect(_container.querySelector('.lds-roller')).toBeInTheDocument();
+		expect(_container.querySelector('.lds-roller')).toBeInTheDocument(); // '.lds-roller' class belongs to '<div>' element in Spinner.jsx
 	});
 
 	/* it('should fetch posts data upon clicking "FETCH POSTS" button', async () => {
-		// Starting from Line-85 through Line-101, Enzyme is used. In order to test using React Testing Library (RTL) implementation,
-		// please comment out those lines and uncomment lines starting from Line-103
+		// Starting from Line-86 through Line-102, Enzyme is used. In order to test using React Testing Library (RTL) implementation,
+		// please comment out those lines and uncomment lines starting from Line-105
 		const component = mount(<Posts />);
 		const fetchPostsData = axiosMock.get.mockResolvedValueOnce({
 			data: {
 				// fake data representation. It has these properties since the response returned from the API has this shape as well.
-				body: 'Post Body 1', // in order to get more detail about fetch request, please refer to Line-111 in Posts.jsx
+				body: 'Post Body 1', // in order to get more detail about fetch request, please refer to Line-107 in Posts.jsx
 				id: 'Post Id 1',
 				title: 'Post Title 1',
 				userId: 'Post User Id 1',
@@ -101,7 +102,7 @@ describe('<Posts /> component tests', () => {
 		expect(fetchPostsData).toHaveBeenCalledTimes(1); // check that mock function was triggered upon simulating a click action
 
 		// Following code snippet is COMPLETELY WRONG! I dont know how to test async function triggered upon click event using RTL!
-		const fetchButtonEl = byTestId('fetch_btn');
+		const fetchButtonEl = byRole('fetch_btn');
         fireEvent.click(fetchButtonEl);
 		await axiosMock.get.mockResolvedValueOnce({
 			data: {
@@ -127,10 +128,12 @@ describe('<Posts /> component tests', () => {
 			},
 		});
 
-		const fetchButtonEl = byTestId('fetch_btn');
+		const fetchButtonEl = byLabelText('fetch_data');
 		fireEvent.click(fetchButtonEl);
-		await wait(() => byTestId('post_wrapper'));
+		await wait(() => byLabelText('post_wrapper'));
 
-		expect(byTestId('post_title')).toHaveTextContent('Title: Post Title 1');
+		expect(byLabelText('post_title')).toHaveTextContent(
+			'Title: Post Title 1'
+		);
 	});
 });
