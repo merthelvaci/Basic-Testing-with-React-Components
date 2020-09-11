@@ -46,8 +46,9 @@ const Posts = () => {
 	);
 	const { error, loading, posts } = postsState; // desctructure component state
 
-	const fetchPostsHandler = useCallback((url) => {
-		try {
+	const fetchPostsHandler = useCallback(() => {
+		// define a function being responsible for making request to API to fetch required data
+		const fetch = async () => {
 			postsDispatch({
 				// before even trying to fetch data, set "loading" state to true in order to indicate a spinner to user
 				type: 'FETCH_POSTS_START',
@@ -55,71 +56,52 @@ const Posts = () => {
 				posts: null,
 				loading: true,
 			});
-			const fetch = async () => {
-				// define a function being responsible for making request to API to fetch required data
-				const response = await axios.get(url);
+			try {
+				const response = await axios.get(
+					'https://jsonplaceholder.typicode.com/posts'
+				);
 				const data = response.data;
 				return postsDispatch({
 					// perform proper state update
 					type: 'FETCH_POSTS_SUCCESS',
 					error: null,
 					loading: false,
-					//posts: response.data,
 					posts: data,
 				});
-			};
-		} catch (e) {
-			return postsDispatch({
-				// in case any failure in fetching data, set "error" state to true along with proper update of other states
-				type: 'FETCH_POSTS_FAIL',
-				error: true,
-				loading: false,
-				posts: null,
-			});
-		}
+			} catch (e) {
+				return postsDispatch({
+					// in case any failure in fetching data, set "error" state to true along with proper update of other states
+					type: 'FETCH_POSTS_FAIL',
+					error: true,
+					loading: false,
+					posts: null,
+				});
+			}
+		};
+
 		fetch(); // call the async function
 	}, []);
 
 	return (
 		<>
-			{loading && <Spinner />}{' '}
-			{/* while loading status is true, show a spinner */}
-			{error &&
-				!loading /* if data fetching fails, show a dummy error text */ && (
-					<div aria-label="error_wrapper" className="error-wrapper">
-						<p aria-label="error_text" className="error-text">
-							An error occurred
-						</p>
-					</div>
-				)}
-			{!posts &&
-				!error /* unless fetch operation is performed, show the following dummy content */ && (
-					<div
-						aria-label="normal_content_wrapper"
-						className="normal-content-wrapper"
-					>
-						<p
-							aria-label="normal_content_text"
-							className="normal-content-text"
-						>
-							No data fetching occurs yet
-						</p>
-						<button
-							aria-label="fetch_data"
-							onClick={() =>
-								fetchPostsHandler(
-									'https://jsonplaceholder.typicode.com/posts'
-								)
-							}
-						>
-							FETCH POSTS
-						</button>
-					</div>
-				)}
+			{loading && <Spinner />}
+			{error && !loading && (
+				<div className="error-wrapper">
+					<p className="error-text">An error occurred</p>
+				</div>
+			)}
+			{!posts && !error && !loading && (
+				<div className="normal-content-wrapper">
+					<p className="normal-content-text">
+						No data fetching occurs yet
+					</p>
+					<button type="button" onClick={fetchPostsHandler}>
+						FETCH POSTS
+					</button>
+				</div>
+			)}
 			{posts &&
-				posts.map((
-					post /* upon successful fetch of posts data, render each post */
-				) => (
+				posts.map((post) => (
 					<Post
 						key={post.body}
 						body={post.body}

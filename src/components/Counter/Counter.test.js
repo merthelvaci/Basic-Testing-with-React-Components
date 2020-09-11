@@ -1,4 +1,5 @@
 import Counter from '.';
+import userEvent from '@testing-library/user-event';
 
 let asFrag;
 let byTestId;
@@ -23,13 +24,13 @@ describe('<Counter /> component tests', () => {
 
 	it('should increment counter upon clicking "Increment" button', () => {
 		const incButtonEl = byTestId('incBtn');
-		fireEvent.click(incButtonEl);
+		userEvent.click(incButtonEl);
 		expect(byTestId('counterText')).toHaveTextContent('1');
 	});
 
 	it('should dcrement counter asynchronously upon clicking "Decrement" button', async () => {
 		const decButtonEl = byTestId('decBtn');
-		fireEvent.click(decButtonEl);
+		userEvent.click(decButtonEl);
 
 		const counterSpan = await waitForElement(() => byText('Counter: -1'));
 		expect(counterSpan).toHaveTextContent('-1');

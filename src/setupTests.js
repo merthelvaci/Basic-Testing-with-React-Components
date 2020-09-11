@@ -7,11 +7,11 @@ import '@testing-library/jest-dom/extend-expect';
 import {
 	render,
 	cleanup,
-	fireEvent,
 	wait,
 	waitForElement,
 	waitForElementToBeRemoved,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
@@ -20,7 +20,7 @@ configure({ adapter: new Adapter() });
 global.React = React;
 global.render = render;
 global.cleanup = cleanup;
-global.fireEvent = fireEvent;
+global.userEvent = userEvent;
 global.wait = wait;
 global.waitForElement = waitForElement;
 global.waitForElementToBeRemoved = waitForElementToBeRemoved;
