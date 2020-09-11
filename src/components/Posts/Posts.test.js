@@ -2,11 +2,10 @@ import Posts, { postsReducer } from '.';
 import { screen } from '@testing-library/react';
 import axios from 'axios';
 import { act } from 'react-dom/test-utils';
+import axiosMock from 'axios';
 
 // perform cleanup operation after each test
 afterEach(cleanup);
-
-jest.mock('axios');
 
 describe('<Posts /> component tests', () => {
 	it('should render <Posts /> component correctly', () => {
@@ -65,21 +64,26 @@ describe('<Posts /> component tests', () => {
 		expect(screen.getByText(/no data fetching/i)).toBeInTheDocument();
 	});
 
-	it.only('should have a loading spinner displayed while data fetching in progress', async () => {
-		const { container } = render(<Posts />);
-
-		await act(async () => {
+	it('should have a loading spinner displayed while data fetching in progress', /* async */ () => {
+		/* await act(async () => {
 			await userEvent.click(
+				screen.getByRole('button', { name: new RegExp(/fetch posts/i) })
+				);
+			});
+		render(<Posts />); */
+		act(() => {
+			render(<Posts />);
+			userEvent.click(
 				screen.getByRole('button', { name: new RegExp(/fetch posts/i) })
 			);
 		});
 
 		screen.debug();
 
-		expect(container.querySelector('.lds-roller')).toBeInTheDocument(); // '.lds-roller' class belongs to '<div>' element in Spinner.jsx
+		expect(screen.getByTestId('spinner_wrapper')).toBeInTheDocument(); // '.lds-roller' class belongs to '<div>' element in Spinner.jsx
 	});
 
-	it('should render a fake post data upon successful data fetching', async () => {
+	it.only('should render a fake post data upon successful data fetching', async () => {
 		const fakeData = {
 			data: [
 				{
@@ -97,9 +101,9 @@ describe('<Posts /> component tests', () => {
 			],
 		};
 
-		expect(axios.get).toHaveBeenCalledTimes(0);
+		expect(axiosMock.get).toHaveBeenCalledTimes(0);
 
-		axios.get.mockImplementationOnce(() => Promise.resolve(fakeData));
+		axiosMock.get.mockResolvedValueOnce(fakeData);
 
 		render(<Posts />);
 
@@ -119,6 +123,6 @@ describe('<Posts /> component tests', () => {
 			await screen.findAllByText(/Title/);
 		});
 
-		expect(axios.get).toHaveBeenCalledTimes(1);
+		expect(axiosMock.get).toHaveBeenCalledTimes(1);
 	});
 });
