@@ -2,6 +2,7 @@ import React, { useCallback, useReducer } from 'react';
 import axios from 'axios';
 import Spinner from '../Spinner';
 import Post from './Post';
+import { useFetch } from '../../hooks/useFetch';
 
 // reducer function which will be triggered upon each state update
 export const postsReducer = (state, action) => {
@@ -38,6 +39,12 @@ const initialPostsState = {
 	loading: false,
 	error: null,
 };
+
+const actionTypes = [
+	'FETCH_POSTS_START',
+	'FETCH_POSTS_SUCCESS',
+	'FETCH_POSTS_FAIL',
+];
 
 const Posts = () => {
 	const [postsState, postsDispatch] = useReducer(
@@ -78,10 +85,8 @@ const Posts = () => {
 				});
 			}
 		};
-
 		fetch(); // call the async function
 	}, []);
-
 	return (
 		<>
 			{loading && <Spinner />}

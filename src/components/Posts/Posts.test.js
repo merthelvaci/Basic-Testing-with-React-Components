@@ -1,11 +1,12 @@
 import Posts, { postsReducer } from '.';
-import { screen } from '@testing-library/react';
-import axios from 'axios';
-import { act } from 'react-dom/test-utils';
+import { screen, act } from '@testing-library/react';
 import axiosMock from 'axios';
 
 // perform cleanup operation after each test
-afterEach(cleanup);
+afterEach(() => {
+	cleanup(); // perform cleanup operation to clear all DOM elements
+	axiosMock.get.mockClear(); // clear mock implementation after each test so that number of calls to "axiosMock" is set to 0.
+});
 
 describe('<Posts /> component tests', () => {
 	it('should render <Posts /> component correctly', () => {
@@ -64,26 +65,19 @@ describe('<Posts /> component tests', () => {
 		expect(screen.getByText(/no data fetching/i)).toBeInTheDocument();
 	});
 
-	it('should have a loading spinner displayed while data fetching in progress', /* async */ () => {
-		/* await act(async () => {
-			await userEvent.click(
-				screen.getByRole('button', { name: new RegExp(/fetch posts/i) })
-				);
-			});
-		render(<Posts />); */
-		act(() => {
+	it('should have a loading spinner displayed while data fetching in progress', async () => {
+		await act(async () => {
 			render(<Posts />);
-			userEvent.click(
-				screen.getByRole('button', { name: new RegExp(/fetch posts/i) })
+			await userEvent.click(
+				screen.getByRole('button', {
+					name: new RegExp(/fetch posts/i),
+				})
 			);
+			expect(screen.getByTestId('spinner_wrapper')).toBeInTheDocument(); // '.lds-roller' class belongs to '<div>' element in Spinner.jsx
 		});
-
-		screen.debug();
-
-		expect(screen.getByTestId('spinner_wrapper')).toBeInTheDocument(); // '.lds-roller' class belongs to '<div>' element in Spinner.jsx
 	});
 
-	it.only('should render a fake post data upon successful data fetching', async () => {
+	it('should render a fake post data upon successful data fetching', async () => {
 		const fakeData = {
 			data: [
 				{
@@ -107,12 +101,6 @@ describe('<Posts /> component tests', () => {
 
 		render(<Posts />);
 
-		/* await userEvent.click(
-			screen.getByRole('button', { name: new RegExp(/fetch posts/i) })
-		);
-
-		await screen.findAllByText(/Title/); */
-
 		await act(async () => {
 			await userEvent.click(
 				screen.getByRole('button', { name: new RegExp(/fetch posts/i) })
@@ -121,6 +109,28 @@ describe('<Posts /> component tests', () => {
 
 		await act(async () => {
 			await screen.findAllByText(/Title/);
+		});
+
+		expect(axiosMock.get).toHaveBeenCalledTimes(1);
+	});
+
+	it('should throw an error upon failed data fetching', async () => {
+		expect(axiosMock.get).toHaveBeenCalledTimes(0);
+
+		axiosMock.get.mockImplementationOnce(() =>
+			Promise.reject({ error: 'An error occurred' })
+		);
+
+		render(<Posts />);
+
+		await act(async () => {
+			await userEvent.click(
+				screen.getByRole('button', { name: new RegExp(/fetch posts/i) })
+			);
+		});
+
+		await act(async () => {
+			await screen.findAllByText(/error occurred/i);
 		});
 
 		expect(axiosMock.get).toHaveBeenCalledTimes(1);

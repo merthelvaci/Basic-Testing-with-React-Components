@@ -12,6 +12,20 @@ exports[`<App /> component tests should render App component correctly 1`] = `
         My Header
       </h1>
     </div>
+    <div
+      class="normal-content-wrapper"
+    >
+      <p
+        class="normal-content-text"
+      >
+        No data fetching occurs yet
+      </p>
+      <button
+        type="button"
+      >
+        FETCH POSTS
+      </button>
+    </div>
   </div>
 </DocumentFragment>
 `;

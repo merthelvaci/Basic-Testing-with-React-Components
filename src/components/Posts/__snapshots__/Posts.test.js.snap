@@ -2,19 +2,16 @@
 
 exports[`<Posts /> component tests should render <Posts /> component correctly 1`] = `
 <DocumentFragment>
-   
   <div
-    aria-label="normal_content_wrapper"
     class="normal-content-wrapper"
   >
     <p
-      aria-label="normal_content_text"
       class="normal-content-text"
     >
       No data fetching occurs yet
     </p>
     <button
-      aria-label="fetch_data"
+      type="button"
     >
       FETCH POSTS
     </button>
