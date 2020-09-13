@@ -3,30 +3,31 @@ import axios from 'axios';
 import Spinner from '../Spinner';
 import Post from './Post';
 import { useFetch } from '../../hooks/useFetch';
+import Button from '../UI/Button/Button';
 
 // reducer function which will be triggered upon each state update
 export const postsReducer = (state, action) => {
 	switch (action.type) {
-		case 'FETCH_POSTS_START':
+		case 'FETCH_START':
 			return {
 				...state,
 				error: action.error,
 				loading: action.loading,
-				posts: action.posts,
+				fetchedData: action.fetchedData,
 			};
-		case 'FETCH_POSTS_SUCCESS':
+		case 'FETCH_SUCCESS':
 			return {
 				...state,
 				error: action.error,
 				loading: action.loading,
-				posts: action.posts,
+				fetchedData: action.fetchedData,
 			};
-		case 'FETCH_POSTS_FAIL':
+		case 'FETCH_FAIL':
 			return {
 				...state,
 				error: action.error,
 				loading: action.loading,
-				posts: action.posts,
+				fetchedData: action.fetchedData,
 			};
 		default:
 			return state;
@@ -35,19 +36,19 @@ export const postsReducer = (state, action) => {
 
 // initial component state to be start with
 const initialPostsState = {
-	posts: null,
+	fetchedData: null,
 	loading: false,
 	error: null,
 };
 
-const actionTypes = [
-	'FETCH_POSTS_START',
-	'FETCH_POSTS_SUCCESS',
-	'FETCH_POSTS_FAIL',
-];
-
 const Posts = () => {
-	const [postsState, postsDispatch] = useReducer(
+	const { error, fetchedData, loading, fetch } = useFetch(
+		'https://jsonplaceholder.typicode.com/posts',
+		initialPostsState,
+		postsReducer
+	);
+
+	/* const [postsState, postsDispatch] = useReducer(
 		postsReducer,
 		initialPostsState
 	);
@@ -86,7 +87,7 @@ const Posts = () => {
 			}
 		};
 		fetch(); // call the async function
-	}, []);
+	}, []); */
 	return (
 		<>
 			{loading && <Spinner />}
@@ -95,18 +96,19 @@ const Posts = () => {
 					<p className="error-text">An error occurred</p>
 				</div>
 			)}
-			{!posts && !error && !loading && (
+			{!fetchedData && !error && !loading && (
 				<div className="normal-content-wrapper">
 					<p className="normal-content-text">
 						No data fetching occurs yet
 					</p>
-					<button type="button" onClick={fetchPostsHandler}>
+					{/* <button type="button" onClick={fetch}>
 						FETCH POSTS
-					</button>
+					</button> */}
+					<Button onClick={fetch}>FETCH POSTS</Button>
 				</div>
 			)}
-			{posts &&
-				posts.map((post) => (
+			{fetchedData &&
+				fetchedData.map((post) => (
 					<Post
 						key={post.body}
 						body={post.body}

@@ -10,9 +10,7 @@ exports[`<Posts /> component tests should render <Posts /> component correctly 1
     >
       No data fetching occurs yet
     </p>
-    <button
-      type="button"
-    >
+    <button>
       FETCH POSTS
     </button>
   </div>

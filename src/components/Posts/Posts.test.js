@@ -1,6 +1,7 @@
 import Posts, { postsReducer } from '.';
-import { screen, act } from '@testing-library/react';
+import { screen, act, waitForElement } from '@testing-library/react';
 import axiosMock from 'axios';
+import Button from '../UI/Button/Button';
 
 // perform cleanup operation after each test
 afterEach(() => {
@@ -18,14 +19,14 @@ describe('<Posts /> component tests', () => {
 		let initialState = {
 			error: null,
 			loading: false,
-			posts: null,
+			fetchedData: null,
 		};
 		it('should set error state to true upon failing data fetching', () => {
 			const updatedState = postsReducer(initialState, {
-				type: 'FETCH_POSTS_FAIL',
+				type: 'FETCH_FAIL',
 				error: true,
 				loading: false,
-				posts: null,
+				fetchedData: null,
 			});
 			expect(updatedState.error).toBeTruthy();
 			expect(updatedState.loading).toBeFalsy();
@@ -34,9 +35,9 @@ describe('<Posts /> component tests', () => {
 
 		it('should set loading state to true upon starting data fetching', () => {
 			const updatedState = postsReducer(initialState, {
-				type: 'FETCH_POSTS_START',
+				type: 'FETCH_START',
 				error: null,
-				posts: null,
+				fetchedData: null,
 				loading: true,
 			});
 			expect(updatedState.error).toBeFalsy();
@@ -48,10 +49,10 @@ describe('<Posts /> component tests', () => {
 			initialState = {
 				error: true,
 				loading: false,
-				posts: null,
+				fetchedData: null,
 			};
 			const updatedState = postsReducer(initialState, {
-				type: 'FETCH_POSTS_SUCCESS',
+				type: 'FETCH_SUCCESS',
 				error: null,
 				loading: false,
 			});
@@ -65,7 +66,18 @@ describe('<Posts /> component tests', () => {
 		expect(screen.getByText(/no data fetching/i)).toBeInTheDocument();
 	});
 
-	it('should have a loading spinner displayed while data fetching in progress', async () => {
+	it('should test if a handler function is triggered upon clicking "FETCH POSTS" button', async () => {
+		const onFetch = jest.fn();
+		expect(onFetch.mock.calls.length).toEqual(0);
+		const button = shallow(<Button onClick={onFetch}>FETCH POSTS</Button>);
+		button.find('button').simulate('click');
+		expect(onFetch.mock.calls.length).toEqual(1);
+		/* const { getByText } = render(<Posts />);
+		const button = getByText(/fetch posts/i);
+		userEvent.click() */
+	});
+
+	/* it('should have a loading spinner displayed while data fetching in progress', async () => {
 		await act(async () => {
 			render(<Posts />);
 			await userEvent.click(
@@ -134,5 +146,5 @@ describe('<Posts /> component tests', () => {
 		});
 
 		expect(axiosMock.get).toHaveBeenCalledTimes(1);
-	});
+	}); */
 });
