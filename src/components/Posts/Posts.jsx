@@ -47,47 +47,6 @@ const Posts = () => {
 		initialPostsState,
 		postsReducer
 	);
-
-	/* const [postsState, postsDispatch] = useReducer(
-		postsReducer,
-		initialPostsState
-	);
-	const { error, loading, posts } = postsState; // desctructure component state
-
-	const fetchPostsHandler = useCallback(() => {
-		// define a function being responsible for making request to API to fetch required data
-		const fetch = async () => {
-			postsDispatch({
-				// before even trying to fetch data, set "loading" state to true in order to indicate a spinner to user
-				type: 'FETCH_POSTS_START',
-				error: null,
-				posts: null,
-				loading: true,
-			});
-			try {
-				const response = await axios.get(
-					'https://jsonplaceholder.typicode.com/posts'
-				);
-				const data = response.data;
-				return postsDispatch({
-					// perform proper state update
-					type: 'FETCH_POSTS_SUCCESS',
-					error: null,
-					loading: false,
-					posts: data,
-				});
-			} catch (e) {
-				return postsDispatch({
-					// in case any failure in fetching data, set "error" state to true along with proper update of other states
-					type: 'FETCH_POSTS_FAIL',
-					error: true,
-					loading: false,
-					posts: null,
-				});
-			}
-		};
-		fetch(); // call the async function
-	}, []); */
 	return (
 		<>
 			{loading && <Spinner />}

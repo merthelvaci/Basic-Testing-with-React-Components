@@ -12,17 +12,17 @@ import {
 	waitForElementToBeRemoved,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { configure, shallow } from 'enzyme';
+/* import { configure, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
-configure({ adapter: new Adapter() });
+configure({ adapter: new Adapter() }); */
 
+//global.shallow = shallow;
 global.React = React;
 global.render = render;
 global.cleanup = cleanup;
-global.shallow = shallow;
 global.userEvent = userEvent;
 global.wait = wait;
 global.waitForElement = waitForElement;
 global.waitForElementToBeRemoved = waitForElementToBeRemoved;
-global.timeoutInMS = 15000;
+global.timeoutInMs = 15000;
